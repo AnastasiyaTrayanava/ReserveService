@@ -9,12 +9,12 @@ namespace FunctionApp1
     public class Function1
     {
         private readonly ILogger<Function1> _logger;
-        private readonly BlobContainerClient _blobContainerClient;
+        private readonly BlobServiceClient _blobServiceClient;
 
-		public Function1(ILogger<Function1> logger, BlobContainerClient blobContainerClient)
+		public Function1(BlobServiceClient blobServiceClient, ILogger<Function1> logger)
         {
             _logger = logger;
-            _blobContainerClient = blobContainerClient;
+            _blobServiceClient = blobServiceClient;
         }
 
         [Function("Function1")]
@@ -26,7 +26,9 @@ namespace FunctionApp1
 
 		        var reqBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss") + ".json");
+		        var containerClient = _blobServiceClient.GetBlobContainerClient("reserved-items");
+
+				var client = containerClient.GetBlobClient(DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss") + ".json");
 		        var response = await client.UploadAsync(BinaryData.FromString(reqBody));
 
 		        return new OkObjectResult("It is done! Response: " + response.Value);

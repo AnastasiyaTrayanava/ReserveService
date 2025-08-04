@@ -1,5 +1,5 @@
-using Azure.Storage.Blobs;
 using Microsoft.Azure.Functions.Worker.Builder;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Hosting;
 
 var builder = FunctionsApplication.CreateBuilder(args);
@@ -11,12 +11,9 @@ builder.ConfigureFunctionsWebApplication();
 //     .AddApplicationInsightsTelemetryWorkerService()
 //     .ConfigureFunctionsApplicationInsights();
 
-var connectionString = Environment.GetEnvironmentVariable("ConnectionString");
-var blobStorageName = Environment.GetEnvironmentVariable("BlobStorageName");
-
-BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
-BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(blobStorageName);
-
-containerClient.CreateIfNotExists();
+builder.Services.AddAzureClients(clientBuilder =>
+{
+	clientBuilder.AddBlobServiceClient(Environment.GetEnvironmentVariable("ConnectionString"));
+});
 
 builder.Build().Run();
