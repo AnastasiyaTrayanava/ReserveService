@@ -26,7 +26,7 @@ namespace FunctionApp1
 
 		        var reqBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss"));
+		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss") + ".json");
 		        var response = await client.UploadAsync(BinaryData.FromString(reqBody));
 
 		        return new OkObjectResult("It is done! Response: " + response.Value);
