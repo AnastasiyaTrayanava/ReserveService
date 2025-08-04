@@ -26,7 +26,7 @@ namespace FunctionApp1
 
 		        var reqBody = new StreamReader(req.Body).BaseStream;
 
-		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToLongTimeString());
+		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss"));
 		        var response = await client.UploadAsync(reqBody);
 
 		        return new OkObjectResult("It is done! Response: " + response.Value);
