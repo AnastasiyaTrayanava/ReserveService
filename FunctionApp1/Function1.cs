@@ -18,7 +18,7 @@ namespace FunctionApp1
         }
 
         [Function("Function1")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequest req)
         {
 	        try
 	        {
