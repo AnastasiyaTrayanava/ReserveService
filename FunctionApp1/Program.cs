@@ -17,4 +17,6 @@ var blobStorageName = Environment.GetEnvironmentVariable("BlobStorageName");
 BlobServiceClient blobServiceClient = new BlobServiceClient(connectionString);
 BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(blobStorageName);
 
+await containerClient.CreateIfNotExistsAsync();
+
 builder.Build().Run();
