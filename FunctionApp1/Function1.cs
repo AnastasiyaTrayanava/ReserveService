@@ -24,10 +24,10 @@ namespace FunctionApp1
 	        {
 		        _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-		        var reqBody = new StreamReader(req.Body).BaseStream;
+		        var reqBody = await new StreamReader(req.Body).ReadToEndAsync();
 
-		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss"));
-		        var response = await client.UploadAsync(reqBody);
+		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToString("dd-MM-yyyy-hh-mm-ss"));
+		        var response = await client.UploadAsync(BinaryData.FromString(reqBody));
 
 		        return new OkObjectResult("It is done! Response: " + response.Value);
 	        }
