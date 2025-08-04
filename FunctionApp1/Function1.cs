@@ -1,0 +1,40 @@
+using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
+
+namespace FunctionApp1
+{
+    public class Function1
+    {
+        private readonly ILogger<Function1> _logger;
+        private readonly BlobContainerClient _blobContainerClient;
+
+		public Function1(ILogger<Function1> logger, BlobContainerClient blobContainerClient)
+        {
+            _logger = logger;
+            _blobContainerClient = blobContainerClient;
+        }
+
+        [Function("Function1")]
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequest req)
+        {
+	        try
+	        {
+		        _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+		        var reqBody = new StreamReader(req.Body).BaseStream;
+
+		        var client = _blobContainerClient.GetBlobClient(DateTime.Now.ToLongTimeString());
+		        var response = await client.UploadAsync(reqBody);
+
+		        return new OkObjectResult("It is done! Response: " + response.Value);
+	        }
+	        catch (Exception e)
+	        {
+				return new BadRequestObjectResult("Something went wrong. Message: " + e.Message);
+			}
+        }
+    }
+}
