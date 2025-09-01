@@ -18,7 +18,7 @@ namespace FunctionApp1
         }
 
         [Function("OrderItemsReserver")]
-        public async Task Run([ServiceBusTrigger("queue", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage message)
+        public async Task Run([ServiceBusTrigger("eshop-queue", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage message)
         {
 	        try
 	        {
