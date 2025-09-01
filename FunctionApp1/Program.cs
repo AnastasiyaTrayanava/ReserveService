@@ -1,3 +1,6 @@
+using Azure.Core;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 using Microsoft.Azure.Functions.Worker.Builder;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Hosting;
@@ -13,7 +16,23 @@ builder.ConfigureFunctionsWebApplication();
 
 builder.Services.AddAzureClients(clientBuilder =>
 {
-	clientBuilder.AddBlobServiceClient(Environment.GetEnvironmentVariable("ConnectionString"));
+	clientBuilder.AddClient<BlobServiceClient, BlobClientOptions>((clientOptions, tokenCredential, serviceProvider) =>
+		{
+			BlobClientOptions blobOptions = new BlobClientOptions()
+			{
+				Retry = {
+					Delay = TimeSpan.FromSeconds(2),
+					MaxRetries = 3,
+					Mode = RetryMode.Exponential,
+					MaxDelay = TimeSpan.FromSeconds(10),
+					NetworkTimeout = TimeSpan.FromSeconds(100)
+				},
+			};
+			var serviceUri = new Uri(Environment.GetEnvironmentVariable("ConnectionString") ?? string.Empty);
+
+			return new BlobServiceClient(serviceUri, new DefaultAzureCredential(), blobOptions);
+		})
+		.WithName("Invoices");
 });
 
 builder.Build().Run();
