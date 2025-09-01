@@ -17,22 +17,22 @@ builder.ConfigureFunctionsWebApplication();
 builder.Services.AddAzureClients(clientBuilder =>
 {
 	clientBuilder.AddClient<BlobServiceClient, BlobClientOptions>((clientOptions, tokenCredential, serviceProvider) =>
+	{
+		BlobClientOptions blobOptions = new BlobClientOptions()
 		{
-			BlobClientOptions blobOptions = new BlobClientOptions()
+			Retry =
 			{
-				Retry = {
-					Delay = TimeSpan.FromSeconds(2),
-					MaxRetries = 3,
-					Mode = RetryMode.Exponential,
-					MaxDelay = TimeSpan.FromSeconds(10),
-					NetworkTimeout = TimeSpan.FromSeconds(100)
-				},
-			};
-			var serviceUri = new Uri(Environment.GetEnvironmentVariable("ConnectionString") ?? string.Empty);
+				Delay = TimeSpan.FromSeconds(2),
+				MaxRetries = 3,
+				Mode = RetryMode.Exponential,
+				MaxDelay = TimeSpan.FromSeconds(10),
+				NetworkTimeout = TimeSpan.FromSeconds(100)
+			},
+		};
+		var serviceUri = new Uri(Environment.GetEnvironmentVariable("AzureBlobConnectionString") ?? string.Empty);
 
-			return new BlobServiceClient(serviceUri, new DefaultAzureCredential(), blobOptions);
-		})
-		.WithName("Invoices");
+		return new BlobServiceClient(serviceUri, new DefaultAzureCredential(), blobOptions);
+	});
 });
 
 builder.Build().Run();
