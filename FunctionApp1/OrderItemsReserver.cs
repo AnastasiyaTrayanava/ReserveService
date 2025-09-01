@@ -36,7 +36,7 @@ namespace FunctionApp1
 		        var httpMessage = new HttpRequestMessage()
 		        {
 			        Method = HttpMethod.Post,
-			        RequestUri = new Uri(Environment.GetEnvironmentVariable("AzureBlobConnectionString") ?? string.Empty),
+			        RequestUri = new Uri(Environment.GetEnvironmentVariable("AzureLogicAppsConnectionString") ?? string.Empty),
 			        Content = new StringContent(JsonSerializer.Serialize(new ErrorBodyMessage
 					{
 						ErrorMessage = e.Message,
