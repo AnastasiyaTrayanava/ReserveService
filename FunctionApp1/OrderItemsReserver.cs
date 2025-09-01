@@ -1,8 +1,9 @@
-using System.Text.Json;
 using Azure.Messaging.ServiceBus;
 using Azure.Storage.Blobs;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using System.Text;
+using System.Text.Json;
 
 namespace FunctionApp1
 {
@@ -40,7 +41,7 @@ namespace FunctionApp1
 			        Content = new StringContent(JsonSerializer.Serialize(new ErrorBodyMessage
 					{
 						ErrorMessage = e.Message,
-						OrderBody = System.Text.Encoding.Default.GetString(message.Body)
+						OrderBody = Encoding.UTF8.GetString(message.Body)
 					}))
 				};
 
